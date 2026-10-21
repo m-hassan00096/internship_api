@@ -13,13 +13,12 @@ return [
     |
     */
 
-    'failed' => 'These credentials do not match our records.',
-    'password' => 'The provided password is incorrect.',
-    'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
-    'login_success' => 'تم تسجيل الدخول بنجاح',
-    'login_failed' => 'بيانات تسجيل الدخول غير صحيحة',
-    'logout_success' => 'تم تسجيل الخروج بنجاح',
+    'failed' => 'بيانات الاعتماد هذه غير متطابقة مع سجلاتنا.',
+    'password' => 'كلمة المرور المقدمة غير صحيحة.',
+    'throttle' => 'محاولات تسجيل دخول كثيرة جداً. يرجى المحاولة مرة أخرى بعد :seconds ثوانٍ.',
+    'login_success' => 'تم تسجيل الدخول بنجاح.',
+    'login_failed' => 'بيانات تسجيل الدخول غير صحيحة.',
+    'logout_success' => 'تم تسجيل الخروج بنجاح.',
     'unauthenticated' => 'غير مسجل الدخول.',
-    'failed' => 'بيانات تسجيل الدخول غير صحيحة.',
     'logout_failed' => 'أنت غير مسجل الدخول.',
 ];
