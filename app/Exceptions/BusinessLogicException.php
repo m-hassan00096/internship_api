@@ -10,7 +10,7 @@ use Illuminate\Http\JsonResponse;
 abstract class BusinessLogicException extends Exception
 {
     public function __construct(
-        string $message = 'Something went wrong.',
+        string $message = '',
         protected HttpStatusCode $status = HttpStatusCode::BAD_REQUEST
     ) {
         parent::__construct($message);

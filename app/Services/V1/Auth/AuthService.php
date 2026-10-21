@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Exceptions\InvalidLoginException;
+use App\Exceptions\InvalidLogoutException;
 class AuthService
 {
     public function login(string $login, string $password): array
@@ -53,12 +54,16 @@ class AuthService
 
     public function logout(): void
     {
-         Auth::guard('web')->logout();
+    if (!Auth::guard('web')->check()) {
+        throw new InvalidLogoutException();
+    }
 
+    Auth::guard('web')->logout();
+}
         // $token = $user->currentAccessToken()?->delete();
 
         // if ($token && method_exists($token, 'delete')) {
         //     $token->delete();
         // }
     }
-}
+

@@ -6,5 +6,5 @@ use App\Http\Controllers\Api\V1\LogoutController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/login', LoginController::class);
-Route::post('/logout', LogoutController::class)->middleware('auth:web');
+Route::post('/logout', LogoutController::class);
 

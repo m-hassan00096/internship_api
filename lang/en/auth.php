@@ -20,4 +20,5 @@ return [
     'logout_success' => 'Logout successful',
     'unauthenticated' => 'Unauthenticated.',
     'failed' => 'Invalid login credentials.',
+    'logout_failed' => 'You are not authenticated.',
 ];
