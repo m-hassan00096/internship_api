@@ -4,6 +4,7 @@ namespace App\Services\V1\Auth;
 
 use App\Enums\UserRole;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class AuthService
@@ -33,7 +34,9 @@ class AuthService
         }
 
         // Create a Sanctum token.
-        $token = $user->createToken('auth-token')->plainTextToken;
+        // $token = $user->createToken('auth-token')->plainTextToken;
+        Auth::guard('web')->login($user);
+
 
         return [
             'user' => [
@@ -42,17 +45,19 @@ class AuthService
                 'email' => $user->email,
                 'role' => $user->role->value,
             ],
-            'token' => $token,
-            'token_type' => 'Bearer',
+            // 'token' => $token,
+            // 'token_type' => 'Bearer',
         ];
     }
 
     public function logout(User $user): void
     {
-        $token = $user->currentAccessToken();
+        Auth::guard('web')->logout();
 
-        if ($token && method_exists($token, 'delete')) {
-            $token->delete();
-        }
+        // $token = $user->currentAccessToken()?->delete();
+
+        // if ($token && method_exists($token, 'delete')) {
+        //     $token->delete();
+        // }
     }
 }

@@ -10,13 +10,13 @@ use App\Models\User;
 use App\Services\V1\Auth\AuthService;
 use Illuminate\Http\Request;
 
-class AuthController extends Controller
+class LoginController extends Controller
 {
     public function __construct(
         private AuthService $authService
     ) {}
 
-    public function login(LoginRequest $request)
+    public function __invoke(LoginRequest $request)
     {
         $data = $request->validated();
 
@@ -27,35 +27,17 @@ class AuthController extends Controller
 
         if (!$result) {
             return ApiResponse::error(
-                'Invalid credentials.',
+                __('auth.login_failed'),
                 HttpStatusCode::UNAUTHORIZED
             );
         }
+        $request->session()->regenerate();
 
         return ApiResponse::success(
             $result,
-            'Login successful.',
-            HttpStatusCode::OK
-        );
-    }
-
-    public function logout(Request $request)
-    {
-        $user = $request->user();
-
-        if (!$user instanceof User) {
-            return ApiResponse::error(
-                'Unauthenticated.',
-                HttpStatusCode::UNAUTHORIZED
-            );
-        }
-
-        $this->authService->logout($user);
-
-        return ApiResponse::success(
             null,
-            'Logout successful.',
             HttpStatusCode::OK
         );
     }
+
 }
