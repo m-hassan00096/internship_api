@@ -50,9 +50,9 @@ class AuthService
         ];
     }
 
-    public function logout(User $user): void
+    public function logout(): void
     {
-        Auth::guard('web')->logout();
+         Auth::guard('web')->logout();
 
         // $token = $user->currentAccessToken()?->delete();
 
