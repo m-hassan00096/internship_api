@@ -6,10 +6,10 @@ use App\Enums\UserRole;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-
+use App\Exceptions\InvalidLoginException;
 class AuthService
 {
-    public function login(string $login, string $password): ?array
+    public function login(string $login, string $password): array
     {
         $user = User::query()
             ->where('email', $login)
@@ -23,14 +23,15 @@ class AuthService
         // dd($user);
 
         if (!$user || !Hash::check($password, $user->password)) {
-            return null;
+            throw new InvalidLoginException();
         }
 
         if (
             in_array($user->role, [UserRole::VENDOR, UserRole::ADMIN], true)
             && $user->email !== $login
-        ) {
-            return null;
+        ) 
+        {
+            throw new InvalidLoginException();
         }
 
         // Create a Sanctum token.
@@ -39,7 +40,7 @@ class AuthService
 
 
         return [
-            'user' => [
+             [
                 'avatar' => $user->avatar,
                 'phone' => $user->phone,
                 'email' => $user->email,
