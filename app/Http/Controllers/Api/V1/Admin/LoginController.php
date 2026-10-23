@@ -1,14 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1;
+namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Enums\HttpStatusCode;
+use App\Enums\UserRole;
 use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\Auth\LoginRequest;
-use App\Models\User;
 use App\Services\V1\Auth\AuthService;
-use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
@@ -22,22 +21,16 @@ class LoginController extends Controller
 
         $result = $this->authService->login(
             $data['login'],
-            $data['password']
+            $data['password'],
+            UserRole::ADMIN
         );
 
-        if (!$result) {
-            return ApiResponse::error(
-                __('auth.login_failed'),
-                HttpStatusCode::UNAUTHORIZED
-            );
-        }
         $request->session()->regenerate();
 
         return ApiResponse::success(
             $result,
-            null,
+            __('auth.login_success'),
             HttpStatusCode::OK
         );
     }
-
 }

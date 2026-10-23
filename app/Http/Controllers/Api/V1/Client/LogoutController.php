@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1;
+namespace App\Http\Controllers\Api\V1\Client;
 
 use App\Enums\HttpStatusCode;
+use App\Enums\UserRole;
 use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Services\V1\Auth\AuthService;
@@ -16,14 +17,14 @@ class LogoutController extends Controller
 
     public function __invoke(Request $request)
     {
-        $this->authService->logout();
+        $this->authService->logout(UserRole::CLIENT);
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
         return ApiResponse::success(
             null,
-           null,
+            null,
             HttpStatusCode::OK
         );
     }

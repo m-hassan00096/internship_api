@@ -3,67 +3,68 @@
 namespace App\Services\V1\Auth;
 
 use App\Enums\UserRole;
+use App\Exceptions\InvalidLoginException;
+use App\Exceptions\InvalidLogoutException;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\Exceptions\InvalidLoginException;
-use App\Exceptions\InvalidLogoutException;
+
 class AuthService
 {
-    public function login(string $login, string $password): array
-    {
+    public function login(
+        string $login,
+        string $password,
+        UserRole $expectedRole
+    ): array {
         $user = User::query()
-            ->where('email', $login)
-            ->first();
+            ->where(function ($query) use ($login, $expectedRole) {
+                $query->where('email', $login);
 
-        if (!$user) {
-            $user = User::query()
-                ->where('phone', $login)
-                ->first();
-        }
-        // dd($user);
+                if ($expectedRole === UserRole::CLIENT) {
+                    $query->orWhere('phone', $login);
+                }
+            })
+            ->first();
 
         if (!$user || !Hash::check($password, $user->password)) {
             throw new InvalidLoginException();
         }
 
-        if (
-            in_array($user->role, [UserRole::VENDOR, UserRole::ADMIN], true)
-            && $user->email !== $login
-        ) 
-        {
+        $role = $user->role instanceof UserRole
+            ? $user->role
+            : UserRole::tryFrom((int) $user->role);
+
+        if ($role !== $expectedRole) {
             throw new InvalidLoginException();
         }
 
-        // Create a Sanctum token.
-        // $token = $user->createToken('auth-token')->plainTextToken;
         Auth::guard('web')->login($user);
 
-
         return [
-             [
-                'avatar' => $user->avatar,
-                'phone' => $user->phone,
-                'email' => $user->email,
-                'role' => $user->role->value,
-            ],
-            // 'token' => $token,
-            // 'token_type' => 'Bearer',
+            'avatar' => $user->avatar,
+            'phone' => $user->phone,
+            'email' => $user->email,
+            'role' => $role->value,
         ];
     }
 
-    public function logout(): void
+    public function logout(UserRole $expectedRole): void
     {
-    if (!Auth::guard('web')->check()) {
-        throw new InvalidLogoutException();
-    }
+        $guard = Auth::guard('web');
+        $user = $guard->user();
 
-    Auth::guard('web')->logout();
+        if (!$user) {
+            throw new InvalidLogoutException();
+        }
+
+        $role = $user->role instanceof UserRole
+            ? $user->role
+            : UserRole::tryFrom((int) $user->role);
+
+        if ($role !== $expectedRole) {
+            throw new InvalidLogoutException();
+        }
+
+        $guard->logout();
+    }
 }
-        // $token = $user->currentAccessToken()?->delete();
-
-        // if ($token && method_exists($token, 'delete')) {
-        //     $token->delete();
-        // }
-    }
-
