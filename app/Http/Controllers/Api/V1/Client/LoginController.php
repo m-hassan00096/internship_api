@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Api\V1\Client;
 
-use App\Enums\HttpStatusCode;
 use App\Enums\UserRole;
 use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\Auth\LoginRequest;
+use App\Http\Resources\UserResource;
 use App\Services\V1\Auth\AuthService;
 
 class LoginController extends Controller
@@ -28,9 +28,8 @@ class LoginController extends Controller
         $request->session()->regenerate();
 
         return ApiResponse::success(
-            $result,
-            __('auth.login_success'),
-            HttpStatusCode::OK
+            (new UserResource($result))->resolve($request),
+            __('auth.login_success')
         );
     }
 }

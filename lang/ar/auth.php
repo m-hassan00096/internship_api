@@ -21,4 +21,5 @@ return [
     'logout_success' => 'تم تسجيل الخروج بنجاح.',
     'unauthenticated' => 'غير مسجل الدخول.',
     'logout_failed' => 'أنت غير مسجل الدخول.',
+    'email_not_verified' => 'من فضلك فعّل بريدك الإلكتروني قبل تسجيل الدخول.',
 ];

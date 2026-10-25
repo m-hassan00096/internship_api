@@ -21,4 +21,5 @@ return [
     'logout_success' => 'Logout successful.',
     'unauthenticated' => 'Unauthenticated.',
     'logout_failed' => 'You are not authenticated.',
+    'email_not_verified' => 'Please verify your email before logging in.',
 ];

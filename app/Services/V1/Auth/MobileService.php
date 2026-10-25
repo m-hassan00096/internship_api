@@ -3,6 +3,7 @@
 namespace App\Services\V1\Auth;
 
 use App\Enums\UserRole;
+use App\Exceptions\AccountInactiveException;
 use App\Exceptions\InvalidLoginException;
 use App\Exceptions\InvalidLogoutException;
 use App\Models\User;
@@ -19,8 +20,12 @@ class MobileService
             })
             ->first();
 
-        if (!$user || !Hash::check($password, $user->password)) {
-            throw new InvalidLoginException();
+        if (! $user || ! Hash::check($password, $user->password)) {
+            throw new InvalidLoginException;
+        }
+
+        if (! $user->is_active) {
+            throw new AccountInactiveException;
         }
 
         $role = $user->role instanceof UserRole
@@ -28,7 +33,7 @@ class MobileService
             : UserRole::tryFrom((int) $user->role);
 
         if ($role !== UserRole::CLIENT) {
-            throw new InvalidLoginException();
+            throw new InvalidLoginException;
         }
 
         $token = $user->createToken('mobile-client')->plainTextToken;
@@ -41,7 +46,7 @@ class MobileService
                 'role' => $role->value,
             ],
             'token' => $token,
-            'token_type' => 'Bearer',
+            'tokenType' => 'Bearer',
         ];
     }
 
@@ -49,8 +54,8 @@ class MobileService
     {
         $token = $user->currentAccessToken();
 
-        if (!$token || !method_exists($token, 'delete')) {
-            throw new InvalidLogoutException();
+        if (! $token || ! method_exists($token, 'delete')) {
+            throw new InvalidLogoutException;
         }
 
         $token->delete();

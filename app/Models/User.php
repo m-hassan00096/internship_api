@@ -18,6 +18,7 @@ class User extends Authenticatable
         'email',
         'role',
         'password',
+        'is_active',
     ];
 
     protected $hidden = [
@@ -31,6 +32,7 @@ class User extends Authenticatable
             'role' => UserRole::class,
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_active' => 'boolean',
         ];
     }
 }

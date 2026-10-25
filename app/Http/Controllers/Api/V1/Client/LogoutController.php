@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api\V1\Client;
 
-use App\Enums\HttpStatusCode;
 use App\Enums\UserRole;
 use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
@@ -24,8 +23,7 @@ class LogoutController extends Controller
 
         return ApiResponse::success(
             null,
-            null,
-            HttpStatusCode::OK
+            null
         );
     }
 }
