@@ -19,7 +19,7 @@ class LoginController extends Controller
     {
         $data = $request->validated();
 
-        $result = $this->authService->login(
+        $user = $this->authService->login(
             $data['login'],
             $data['password'],
             UserRole::VENDOR
@@ -27,9 +27,10 @@ class LoginController extends Controller
 
         $request->session()->regenerate();
 
-        return ApiResponse::success(
-            (new UserResource($result))->resolve($request),
-            __('auth.login_success')
-        );
+        return ApiResponse::success([
+            'user' => new UserResource($user),
+            'roles' => $user->getRoleNames(),
+            'permissions' => $user->getAllPermissions()->pluck('name'),
+        ], __('auth.login_success'));
     }
 }
