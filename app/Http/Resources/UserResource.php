@@ -2,7 +2,7 @@
 
 namespace App\Http\Resources;
 
-use App\Enums\UserRole;
+use App\Enums\UserScope;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -10,14 +10,13 @@ class UserResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
-        $roleName = $this->role instanceof UserRole
+        $roleName = $this->role instanceof UserScope
             ? $this->role->name
-            : (UserRole::tryFrom((int) $this->role)?->name ?? '');
+            : (UserScope::tryFrom((int) $this->role)?->name ?? '');
 
         return [
             'email' => $this->email,
-            'role' => strtolower($roleName),
-            'managerId' => $this->whenNotNull($this->manager_id),
+            'scope' => strtolower($roleName),
         ];
     }
 }

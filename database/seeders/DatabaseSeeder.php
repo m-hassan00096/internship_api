@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Enums\UserRole;
+use App\Enums\UserScope;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
             [
                 'phone' => '01000000001',
                 'password' => 'password123',
-                'role' => UserRole::CLIENT,
+                'role' => UserScope::CLIENT,
                 'is_active' => true,
             ]
         );

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
-use App\Enums\UserRole;
+use App\Enums\UserScope;
 use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Services\V1\Auth\AuthService;
@@ -16,7 +16,7 @@ class LogoutController extends Controller
 
     public function __invoke(Request $request)
     {
-        $this->authService->logout(UserRole::ADMIN);
+        $this->authService->logout(UserScope::ADMIN);
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();

@@ -14,4 +14,3 @@ enum HttpStatusCode: int
     case TOO_MANY_REQUESTS = 429;
     case INTERNAL_SERVER_ERROR = 500;
 }
-

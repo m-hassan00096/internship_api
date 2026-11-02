@@ -1,9 +1,10 @@
 <?php
 
+use App\Enums\UserScope;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use App\Enums\UserRole;
+
 return new class extends Migration
 {
     /**
@@ -16,7 +17,7 @@ return new class extends Migration
             $table->string('avatar')->nullable();
             $table->string('phone')->nullable()->unique();
             $table->string('email')->nullable()->unique();
-            $table->unsignedTinyInteger('role')->default(UserRole::CLIENT->value);
+            $table->unsignedTinyInteger('role')->default(UserScope::CLIENT->value);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();

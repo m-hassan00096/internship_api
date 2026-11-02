@@ -2,7 +2,7 @@
 
 namespace App\Services\V1\Auth;
 
-use App\Enums\UserRole;
+use App\Enums\UserScope;
 use App\Exceptions\AccountInactiveException;
 use App\Exceptions\InvalidLoginException;
 use App\Exceptions\InvalidLogoutException;
@@ -28,11 +28,11 @@ class MobileService
             throw new AccountInactiveException;
         }
 
-        $role = $user->role instanceof UserRole
+        $role = $user->role instanceof UserScope
             ? $user->role
-            : UserRole::tryFrom((int) $user->role);
+            : UserScope::tryFrom((int) $user->role);
 
-        if ($role !== UserRole::CLIENT) {
+        if ($role !== UserScope::CLIENT) {
             throw new InvalidLoginException;
         }
 

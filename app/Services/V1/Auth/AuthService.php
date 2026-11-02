@@ -2,7 +2,7 @@
 
 namespace App\Services\V1\Auth;
 
-use App\Enums\UserRole;
+use App\Enums\UserScope;
 use App\Exceptions\AccountInactiveException;
 use App\Exceptions\InvalidLoginException;
 use App\Exceptions\InvalidLogoutException;
@@ -15,13 +15,13 @@ class AuthService
     public function login(
         string $login,
         string $password,
-        UserRole $expectedRole
+        UserScope $expectedRole
     ): User {
         $user = User::query()
             ->where(function ($query) use ($login, $expectedRole) {
                 $query->where('email', $login);
 
-                if ($expectedRole === UserRole::CLIENT) {
+                if ($expectedRole === UserScope::CLIENT) {
                     $query->orWhere('phone', $login);
                 }
             })
@@ -46,7 +46,7 @@ class AuthService
         return $user;
     }
 
-    public function logout(UserRole $expectedRole): void
+    public function logout(UserScope $expectedRole): void
     {
         $guard = Auth::guard('web');
         $user = $guard->user();
@@ -64,11 +64,11 @@ class AuthService
         $guard->logout();
     }
 
-    private function getRole(User $user): UserRole
+    private function getRole(User $user): UserScope
     {
-        $role = $user->role instanceof UserRole
+        $role = $user->role instanceof UserScope
             ? $user->role
-            : UserRole::tryFrom((int) $user->role);
+            : UserScope::tryFrom((int) $user->role);
 
         if (! $role) {
             throw new InvalidLoginException;

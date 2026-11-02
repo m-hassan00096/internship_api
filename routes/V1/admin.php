@@ -1,9 +1,8 @@
-
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\Admin\LoginController;
 use App\Http\Controllers\Api\V1\Admin\LogoutController;
+use Illuminate\Support\Facades\Route;
 
 Route::prefix('admin')->group(function () {
     Route::post('/login', LoginController::class)

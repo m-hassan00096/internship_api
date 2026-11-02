@@ -8,7 +8,7 @@ class ApiResponse
 {
     public static function success(
         mixed $data = null,
-        string $message = null,
+        ?string $message = null,
         HttpStatusCode $status = HttpStatusCode::OK
     ) {
         return response()->json([
@@ -19,7 +19,7 @@ class ApiResponse
     }
 
     public static function error(
-        string $message = null,
+        ?string $message = null,
         HttpStatusCode $status = HttpStatusCode::BAD_REQUEST
     ) {
         return response()->json([

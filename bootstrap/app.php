@@ -2,6 +2,7 @@
 <?php
 
 use App\Http\Middleware\SetLocale;
+use App\Http\Middleware\SetPermissionsTeamId;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Application;
@@ -27,6 +28,7 @@ return Application::configure(basePath: dirname(__DIR__))
             StartSession::class,
         ]);
         $middleware->appendToGroup('api', SetLocale::class);
+        $middleware->appendToGroup('api', SetPermissionsTeamId::class);
 
         $middleware->alias([
             'role' => RoleMiddleware::class,

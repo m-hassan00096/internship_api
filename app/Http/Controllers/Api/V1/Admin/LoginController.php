@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
-use App\Enums\UserRole;
+use App\Enums\UserScope;
 use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\Auth\LoginRequest;
@@ -22,15 +22,18 @@ class LoginController extends Controller
         $user = $this->authService->login(
             $data['login'],
             $data['password'],
-            UserRole::ADMIN
+            UserScope::ADMIN
         );
 
         $request->session()->regenerate();
 
+        setPermissionsTeamId(1);
+
         return ApiResponse::success([
             'user' => new UserResource($user),
-            'roles' => $user->getRoleNames(),
+            'role' => $user->getRoleNames(),
             'permissions' => $user->getAllPermissions()->pluck('name'),
-        ], __('auth.login_success'));
+        ], 
+    );
     }
 }
