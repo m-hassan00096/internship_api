@@ -33,7 +33,7 @@ class LoginController extends Controller
             'user' => new UserResource($user),
             'role' => $user->getRoleNames(),
             'permissions' => $user->getAllPermissions()->pluck('name'),
-        ], 
-    );
+        ],
+        );
     }
 }

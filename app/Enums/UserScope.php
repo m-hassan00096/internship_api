@@ -8,4 +8,3 @@ enum UserScope: int
     case VENDOR = 2;
     case ADMIN = 3;
 }
-
