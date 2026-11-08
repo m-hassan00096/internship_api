@@ -1,0 +1,17 @@
+
+<?php
+
+use App\Http\Controllers\Api\V1\Client\LoginController;
+use App\Http\Controllers\Api\V1\Client\LogoutController;
+use Illuminate\Support\Facades\Route;
+
+Route::prefix('client')->group(function () {
+    Route::prefix('auth')->group(function () {
+
+        Route::post('/login', LoginController::class)->name('login');
+
+        Route::post('/logout', LogoutController::class)
+            ->middleware('auth:web')
+            ->name('logout');
+    });
+});
