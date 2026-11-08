@@ -20,7 +20,7 @@ class VendorApprovedMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'تم اعتماد طلب انضمامك إلى منصة BaytFolio 🎉',
+            subject: __('vendor/registration.emails.approved_subject'),
         );
     }
 

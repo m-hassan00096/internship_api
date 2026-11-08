@@ -31,12 +31,12 @@ class VendorRegistrationService
 
         return VendorRegistration::create([
             'registration_number' => $regNumber,
-            'vendor_name' => $data['vendor_name'],
-            'business_type' => $data['business_type'],
-            'contact_name' => $data['contact_name'],
+            'vendor_name' => $data['vendorName'] ?? $data['vendor_name'] ?? null,
+            'business_type' => $data['businessType'] ?? $data['business_type'] ?? null,
+            'contact_name' => $data['contactName'] ?? $data['contact_name'] ?? null,
             'email' => $data['email'],
             'phone' => $data['phone'],
-            'has_whatsapp' => $data['has_whatsapp'] ?? false,
+            'has_whatsapp' => $data['hasWhatsapp'] ?? $data['has_whatsapp'] ?? false,
             'status' => RegistrationStatus::NEW,
         ]);
     }
@@ -112,7 +112,7 @@ class VendorRegistrationService
             // توليد Token التفعيل
             $token = Password::broker()->createToken($user);
             $frontendUrl = config('app.frontend_url', 'http://localhost:3000');
-            $setupUrl = "{$frontendUrl}/vendor/setup-password?token={$token}&email=".urlencode($user->email);
+            $setupUrl = "{$frontendUrl}/vendor/set-password?token={$token}&email=".urlencode($user->email);
 
             // تحديث حالة الطلب
             $registration->update([
@@ -156,13 +156,13 @@ class VendorRegistrationService
     /**
      * تعيين كلمة المرور وتفعيل الحساب وتسجيل الدخول المباشر
      */
-    public function setupPasswordAndActivate(string $email, string $token, string $password): User
+    public function setPasswordAndActivate(string $email, string $token, string $password): User
     {
         $user = User::where('email', $email)->first();
 
         if (! $user || ! Password::broker()->tokenExists($user, $token)) {
             throw ValidationException::withMessages([
-                'token' => ['رابط التفعيل غير صالح أو انتهت صلاحيته.'],
+                'token' => [__('vendor/registration.validation.invalid_token')],
             ]);
         }
 

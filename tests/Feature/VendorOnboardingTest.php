@@ -31,12 +31,12 @@ class VendorOnboardingTest extends TestCase
     public function test_user_can_submit_vendor_registration(): void
     {
         $payload = [
-            'vendor_name' => 'معرض السعادة للأثاث',
-            'business_type' => 'شركة أثاث ومفروشات',
-            'contact_name' => 'أحمد محمود',
+            'vendorName' => 'معرض السعادة للأثاث',
+            'businessType' => 'شركة أثاث ومفروشات',
+            'contactName' => 'أحمد محمود',
             'email' => 'ahmed.vendor@example.com',
             'phone' => '01012345678',
-            'has_whatsapp' => true,
+            'hasWhatsapp' => true,
         ];
 
         $response = $this->postJson(route('vendor.registrations.store'), $payload);
@@ -165,10 +165,10 @@ class VendorOnboardingTest extends TestCase
             'token' => $token,
             'email' => 'newvendor@example.com',
             'password' => 'NewSecurePassword123!',
-            'password_confirmation' => 'NewSecurePassword123!',
+            'passwordConfirmation' => 'NewSecurePassword123!',
         ];
 
-        $response = $this->postJson(route('setup-password'), $payload);
+        $response = $this->postJson(route('set-password'), $payload);
 
         $response->assertOk()
             ->assertJsonPath('success', true)
@@ -206,10 +206,10 @@ class VendorOnboardingTest extends TestCase
             'token' => 'invalid-or-fake-token-12345',
             'email' => 'invalidtoken@example.com',
             'password' => 'NewSecurePassword123!',
-            'password_confirmation' => 'NewSecurePassword123!',
+            'passwordConfirmation' => 'NewSecurePassword123!',
         ];
 
-        $response = $this->postJson(route('setup-password'), $payload);
+        $response = $this->postJson(route('set-password'), $payload);
 
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['token']);
@@ -225,11 +225,15 @@ class VendorOnboardingTest extends TestCase
         $this->assertEquals('قيد المراجعة', RegistrationStatus::UNDER_REVIEW->label());
         $this->assertEquals('معتمد', RegistrationStatus::toString(RegistrationStatus::APPROVED->value));
         $this->assertEquals('غير معروف', RegistrationStatus::toString(999));
+        $this->assertEquals('تم استلام طلبكم بنجاح وجاري مراجعته من فريق المنصة.', __('vendor/registration.success_submission'));
+        $this->assertEquals('تم إنشاء كلمة المرور وتفعيل حسابك بنجاح، مرحباً بك في لوحة التحكم.', __('vendor/registration.setup_password_success'));
 
         app()->setLocale('en');
         $this->assertEquals('New', RegistrationStatus::NEW->label());
         $this->assertEquals('Under Review', RegistrationStatus::UNDER_REVIEW->label());
         $this->assertEquals('Approved', RegistrationStatus::toString(RegistrationStatus::APPROVED->value));
         $this->assertEquals('Unknown', RegistrationStatus::toString(999));
+        $this->assertEquals('Your application has been received successfully and is under review by our team.', __('vendor/registration.success_submission'));
+        $this->assertEquals('Password created and account activated successfully, welcome to your dashboard.', __('vendor/registration.setup_password_success'));
     }
 }

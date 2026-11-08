@@ -20,7 +20,7 @@ class VendorRejectedMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'تحديث بخصوص طلب تسجيلكم في منصة BaytFolio',
+            subject: __('vendor/registration.emails.rejected_subject'),
         );
     }
 
@@ -36,4 +36,3 @@ class VendorRejectedMail extends Mailable
         return [];
     }
 }
-

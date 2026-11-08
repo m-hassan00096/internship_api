@@ -17,12 +17,22 @@ class StoreVendorRegistrationRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'vendorName' => $this->input('vendorName', $this->input('vendor_name')),
+            'businessType' => $this->input('businessType', $this->input('business_type')),
+            'contactName' => $this->input('contactName', $this->input('contact_name')),
+            'hasWhatsapp' => $this->input('hasWhatsapp', $this->input('has_whatsapp')),
+        ]);
+    }
+
     public function rules(): array
     {
         return [
-            'vendor_name' => ['required', 'string', 'max:255'],
-            'business_type' => ['required', 'string', 'max:255'],
-            'contact_name' => ['required', 'string', 'max:255'],
+            'vendorName' => ['required', 'string', 'max:255'],
+            'businessType' => ['required', 'string', 'max:255'],
+            'contactName' => ['required', 'string', 'max:255'],
             'email' => [
                 'required',
                 'email',
@@ -41,15 +51,27 @@ class StoreVendorRegistrationRequest extends FormRequest
                     $query->whereNotIn('status', [RegistrationStatus::REJECTED->value]);
                 }),
             ],
-            'has_whatsapp' => ['nullable', 'boolean'],
+            'hasWhatsapp' => ['nullable', 'boolean'],
+        ];
+    }
+
+    public function attributes(): array
+    {
+        return [
+            'vendorName' => 'اسم المعرض',
+            'businessType' => 'نوع النشاط',
+            'contactName' => 'اسم جهة الاتصال',
+            'email' => 'البريد الإلكتروني',
+            'phone' => 'رقم الهاتف',
+            'hasWhatsapp' => 'واتساب',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'email.unique' => 'البريد الإلكتروني مسجل بالفعل أو لديه طلب تسجيل قيد المعالجة.',
-            'phone.unique' => 'رقم الهاتف مسجل بالفعل أو لديه طلب تسجيل قيد المعالجة.',
+            'email.unique' => __('vendor/registration.validation.email_unique'),
+            'phone.unique' => __('vendor/registration.validation.phone_unique'),
         ];
     }
 

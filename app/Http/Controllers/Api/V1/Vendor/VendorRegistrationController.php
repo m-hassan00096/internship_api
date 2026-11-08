@@ -21,7 +21,7 @@ class VendorRegistrationController extends Controller
 
         return ApiResponse::success(
             null,
-            'تم استلام طلبكم بنجاح وجاري مراجعته من فريق المنصة.',
+            __('vendor/registration.success_submission'),
             HttpStatusCode::CREATED
         );
     }
