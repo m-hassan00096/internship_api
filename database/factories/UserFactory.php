@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\UserActive;
 use App\Enums\UserScope;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -32,7 +33,7 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
-            'is_active' => true,
+            'user_active' => UserActive::ACTIVE,
         ];
     }
 
@@ -52,7 +53,17 @@ class UserFactory extends Factory
     public function inactive(): static
     {
         return $this->state(fn (array $attributes) => [
-            'is_active' => false,
+            'user_active' => UserActive::INACTIVE,
+        ]);
+    }
+
+    /**
+     * Indicate that the user account is awaiting initial password setup.
+     */
+    public function pendingPassword(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'user_active' => UserActive::PENDING_PASSWORD,
         ]);
     }
 }

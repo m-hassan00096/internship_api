@@ -2,6 +2,7 @@
 
 namespace App\Services\V1\Auth;
 
+use App\Enums\UserActive;
 use App\Enums\UserScope;
 use App\Exceptions\AccountInactiveException;
 use App\Exceptions\InvalidLoginException;
@@ -18,7 +19,7 @@ class AuthService
         UserScope $expectedRole
     ): User {
         $user = User::query()
-            ->where(function ($query) use ($login, $expectedRole) {
+            ->where(function ($query) use ($login, $expectedRole): void {
                 $query->where('email', $login);
 
                 if ($expectedRole === UserScope::CLIENT) {
@@ -27,18 +28,28 @@ class AuthService
             })
             ->first();
 
-        if (! $user || ! Hash::check($password, $user->password)) {
+        if (! $user) {
             throw new InvalidLoginException;
-        }
-
-        if (! $user->is_active) {
-            throw new AccountInactiveException;
         }
 
         $role = $this->getRole($user);
 
         if ($role !== $expectedRole) {
             throw new InvalidLoginException;
+        }
+
+        $userActive = $this->getUserActive($user);
+
+        if ($userActive === UserActive::PENDING_PASSWORD) {
+            throw new AccountInactiveException($userActive->message());
+        }
+
+        if (! Hash::check($password, $user->password)) {
+            throw new InvalidLoginException;
+        }
+
+        if ($userActive !== UserActive::ACTIVE) {
+            throw new AccountInactiveException($userActive->message());
         }
 
         Auth::guard('web')->login($user);
@@ -75,5 +86,18 @@ class AuthService
         }
 
         return $role;
+    }
+
+    private function getUserActive(User $user): UserActive
+    {
+        if ($user->user_active instanceof UserActive) {
+            return $user->user_active;
+        }
+
+        if ($user->user_active === null) {
+            return UserActive::INACTIVE;
+        }
+
+        return UserActive::tryFrom((int) $user->user_active) ?? UserActive::INACTIVE;
     }
 }

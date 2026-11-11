@@ -4,7 +4,7 @@ namespace App\Enums;
 
 enum UserScope: int
 {
-    case CLIENT = 1;
-    case VENDOR = 2;
-    case ADMIN = 3;
+    case CLIENT = 0;
+    case VENDOR = 1;
+    case ADMIN = 2;
 }

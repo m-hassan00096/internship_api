@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\UserActive;
 use App\Enums\UserScope;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -16,7 +17,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call(RoleAndPermissionSeeder::class);
+        $this->call([
+            RoleAndPermissionSeeder::class,
+            BusinessTypeSeeder::class,
+        ]);
 
         User::firstOrCreate(
             ['email' => 'client@example.com'],
@@ -24,7 +28,7 @@ class DatabaseSeeder extends Seeder
                 'phone' => '01000000001',
                 'password' => 'password123',
                 'role' => UserScope::CLIENT,
-                'is_active' => true,
+                'user_active' => UserActive::ACTIVE,
             ]
         );
     }

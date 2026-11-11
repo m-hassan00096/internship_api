@@ -2,6 +2,7 @@
 
 namespace App\Services\V1\Auth;
 
+use App\Enums\UserActive;
 use App\Enums\UserScope;
 use App\Exceptions\AccountInactiveException;
 use App\Exceptions\InvalidLoginException;
@@ -14,18 +15,14 @@ class MobileService
     public function login(string $login, string $password): array
     {
         $user = User::query()
-            ->where(function ($query) use ($login) {
+            ->where(function ($query) use ($login): void {
                 $query->where('email', $login)
                     ->orWhere('phone', $login);
             })
             ->first();
 
-        if (! $user || ! Hash::check($password, $user->password)) {
+        if (! $user) {
             throw new InvalidLoginException;
-        }
-
-        if (! $user->is_active) {
-            throw new AccountInactiveException;
         }
 
         $role = $user->role instanceof UserScope
@@ -34,6 +31,22 @@ class MobileService
 
         if ($role !== UserScope::CLIENT) {
             throw new InvalidLoginException;
+        }
+
+        $userActive = $user->user_active instanceof UserActive
+            ? $user->user_active
+            : (UserActive::tryFrom((int) $user->user_active) ?? UserActive::INACTIVE);
+
+        if ($userActive === UserActive::PENDING_PASSWORD) {
+            throw new AccountInactiveException($userActive->message());
+        }
+
+        if (! Hash::check($password, $user->password)) {
+            throw new InvalidLoginException;
+        }
+
+        if ($userActive !== UserActive::ACTIVE) {
+            throw new AccountInactiveException($userActive->message());
         }
 
         $token = $user->createToken('mobile-client')->plainTextToken;

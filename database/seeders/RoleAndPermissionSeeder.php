@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Enums\PermissionScope;
+use App\Enums\UserActive;
 use App\Enums\UserScope;
 use App\Models\Permission;
 use App\Models\User;
@@ -75,7 +76,7 @@ class RoleAndPermissionSeeder extends Seeder
                 'password' => 'password123',
                 'role' => UserScope::ADMIN,
                 'manager_id' => null,
-                'is_active' => true,
+                'user_active' => UserActive::ACTIVE,
             ]
         );
         setPermissionsTeamId(1);
@@ -88,7 +89,7 @@ class RoleAndPermissionSeeder extends Seeder
                 'password' => 'password123',
                 'role' => UserScope::ADMIN,
                 'manager_id' => $admin1->id,
-                'is_active' => true,
+                'user_active' => UserActive::ACTIVE,
             ]
         );
         $staffAdmin1->update(['manager_id' => $admin1->id]);
@@ -102,7 +103,7 @@ class RoleAndPermissionSeeder extends Seeder
                 'password' => 'password123',
                 'role' => UserScope::ADMIN,
                 'manager_id' => null,
-                'is_active' => true,
+                'user_active' => UserActive::ACTIVE,
             ]
         );
         $admin2->syncRoles([$superAdminRole]);
@@ -114,7 +115,7 @@ class RoleAndPermissionSeeder extends Seeder
                 'password' => 'password123',
                 'role' => UserScope::ADMIN,
                 'manager_id' => $admin2->id,
-                'is_active' => true,
+                'user_active' => UserActive::ACTIVE,
             ]
         );
         $staffAdmin2->update(['manager_id' => $admin2->id]);
@@ -128,7 +129,7 @@ class RoleAndPermissionSeeder extends Seeder
                 'password' => 'password123',
                 'role' => UserScope::VENDOR,
                 'manager_id' => null,
-                'is_active' => true,
+                'user_active' => UserActive::ACTIVE,
             ]
         );
 
@@ -162,7 +163,7 @@ class RoleAndPermissionSeeder extends Seeder
                 'password' => 'password123',
                 'role' => UserScope::VENDOR,
                 'manager_id' => $vendor1->id,
-                'is_active' => true,
+                'user_active' => UserActive::ACTIVE,
             ]
         );
         $cashier1->update(['manager_id' => $vendor1->id]);
@@ -176,7 +177,7 @@ class RoleAndPermissionSeeder extends Seeder
                 'password' => 'password123',
                 'role' => UserScope::VENDOR,
                 'manager_id' => null,
-                'is_active' => true,
+                'user_active' => UserActive::ACTIVE,
             ]
         );
 
@@ -210,7 +211,7 @@ class RoleAndPermissionSeeder extends Seeder
                 'password' => 'password123',
                 'role' => UserScope::VENDOR,
                 'manager_id' => $vendor2->id,
-                'is_active' => true,
+                'user_active' => UserActive::ACTIVE,
             ]
         );
         $cashier2->update(['manager_id' => $vendor2->id]);
@@ -224,10 +225,10 @@ class RoleAndPermissionSeeder extends Seeder
                 'password' => 'password123',
                 'role' => UserScope::CLIENT,
                 'manager_id' => null,
-                'is_active' => true,
+                'user_active' => UserActive::ACTIVE,
             ]
         );
-        $client->update(['is_active' => true]);
+        $client->update(['user_active' => UserActive::ACTIVE]);
         setPermissionsTeamId(1);
         $client->syncPermissions([
             'view profile',
