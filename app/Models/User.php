@@ -2,7 +2,10 @@
 
 namespace App\Models;
 
+use App\Enums\UserActive;
 use App\Enums\UserScope;
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -22,7 +25,7 @@ class User extends Authenticatable
         'role',
         'manager_id',
         'password',
-        'is_active',
+        'user_active',
     ];
 
     protected $hidden = [
@@ -36,8 +39,22 @@ class User extends Authenticatable
             'role' => UserScope::class,
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'is_active' => 'boolean',
+            'user_active' => UserActive::class,
         ];
+    }
+
+    /**
+     * قصر الاستعلام على الحسابات النشطة فقط
+     */
+    #[Scope]
+    protected function active(Builder $query): Builder
+    {
+        return $query->where('user_active', UserActive::ACTIVE);
+    }
+
+    public function isActive(): bool
+    {
+        return $this->user_active === UserActive::ACTIVE;
     }
 
     /**

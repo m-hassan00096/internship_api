@@ -21,24 +21,31 @@ class StoreVendorRegistrationRequest extends FormRequest
     {
         $this->merge([
             'vendorName' => $this->input('vendorName', $this->input('vendor_name')),
-            'businessType' => $this->input('businessType', $this->input('business_type')),
+            'businessTypeId' => $this->input('businessTypeId', $this->input('business_type_id')),
             'contactName' => $this->input('contactName', $this->input('contact_name')),
             'hasWhatsapp' => $this->input('hasWhatsapp', $this->input('has_whatsapp')),
         ]);
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function rules(): array
     {
         return [
             'vendorName' => ['required', 'string', 'max:255'],
-            'businessType' => ['required', 'string', 'max:255'],
+            'businessTypeId' => [
+                'required',
+                'integer',
+                Rule::exists('business_types', 'id')->where('is_active', true),
+            ],
             'contactName' => ['required', 'string', 'max:255'],
             'email' => [
                 'required',
                 'email',
                 'max:255',
                 'unique:users,email',
-                Rule::unique('vendor_registrations', 'email')->where(function ($query) {
+                Rule::unique('vendor_registrations', 'email')->where(function ($query): void {
                     $query->whereNotIn('status', [RegistrationStatus::REJECTED->value]);
                 }),
             ],
@@ -47,7 +54,7 @@ class StoreVendorRegistrationRequest extends FormRequest
                 'string',
                 'max:20',
                 'unique:users,phone',
-                Rule::unique('vendor_registrations', 'phone')->where(function ($query) {
+                Rule::unique('vendor_registrations', 'phone')->where(function ($query): void {
                     $query->whereNotIn('status', [RegistrationStatus::REJECTED->value]);
                 }),
             ],
@@ -55,11 +62,14 @@ class StoreVendorRegistrationRequest extends FormRequest
         ];
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function attributes(): array
     {
         return [
             'vendorName' => 'اسم المعرض',
-            'businessType' => 'نوع النشاط',
+            'businessTypeId' => 'نوع النشاط',
             'contactName' => 'اسم جهة الاتصال',
             'email' => 'البريد الإلكتروني',
             'phone' => 'رقم الهاتف',
@@ -67,9 +77,13 @@ class StoreVendorRegistrationRequest extends FormRequest
         ];
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function messages(): array
     {
         return [
+            'businessTypeId.exists' => __('vendor/registration.validation.business_type_invalid'),
             'email.unique' => __('vendor/registration.validation.email_unique'),
             'phone.unique' => __('vendor/registration.validation.phone_unique'),
         ];

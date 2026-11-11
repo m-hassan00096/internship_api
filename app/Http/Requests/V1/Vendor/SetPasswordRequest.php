@@ -15,24 +15,21 @@ class SetPasswordRequest extends FormRequest
         return true;
     }
 
-    protected function prepareForValidation(): void
-    {
-        if ($this->has('passwordConfirmation')) {
-            $this->merge([
-                'password_confirmation' => $this->input('passwordConfirmation'),
-            ]);
-        }
-    }
-
+    /**
+     * @return array<string, mixed>
+     */
     public function rules(): array
     {
         return [
             'email' => ['required', 'email'],
             'token' => ['required', 'string'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'password' => ['required', 'string', 'min:8', 'confirmed:passwordConfirmation'],
         ];
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function attributes(): array
     {
         return [
@@ -40,7 +37,6 @@ class SetPasswordRequest extends FormRequest
             'token' => 'رمز التحقق',
             'password' => 'كلمة المرور',
             'passwordConfirmation' => 'تأكيد كلمة المرور',
-            'password_confirmation' => 'تأكيد كلمة المرور',
         ];
     }
 

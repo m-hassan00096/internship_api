@@ -6,6 +6,7 @@ use App\Enums\RegistrationStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class VendorRegistration extends Model
 {
@@ -14,18 +15,18 @@ class VendorRegistration extends Model
     protected $fillable = [
         'registration_number',
         'vendor_name',
-        'business_type',
+        'business_type_id',
         'contact_name',
         'email',
         'phone',
         'has_whatsapp',
         'status',
-        'rejection_reason',
-        'notes',
-        'reviewed_by',
         'user_id',
     ];
 
+    /**
+     * @return array<string, string>
+     */
     protected function casts(): array
     {
         return [
@@ -34,13 +35,20 @@ class VendorRegistration extends Model
         ];
     }
 
-    public function reviewer(): BelongsTo
+    public function businessType(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'reviewed_by');
+        return $this->belongsTo(BusinessType::class, 'business_type_id');
     }
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function histories(): HasMany
+    {
+        return $this->hasMany(VendorRegistrationHistory::class, 'vendor_registration_id')
+            ->orderByDesc('created_at')
+            ->orderByDesc('id');
     }
 }

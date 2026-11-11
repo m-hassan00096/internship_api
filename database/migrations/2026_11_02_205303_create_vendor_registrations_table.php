@@ -12,19 +12,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('vendor_registrations', function (Blueprint $table) {
+        Schema::create('vendor_registrations', function (Blueprint $table): void {
             $table->id();
             $table->string('registration_number')->unique();
             $table->string('vendor_name');
-            $table->string('business_type');
+            $table->foreignId('business_type_id')->constrained('business_types')->restrictOnDelete();
             $table->string('contact_name');
             $table->string('email')->index();
-            $table->string('phone');
+            $table->string('phone')->index();
             $table->boolean('has_whatsapp')->default(false);
-            $table->unsignedTinyInteger('status')->default(RegistrationStatus::NEW->value);
-            $table->text('rejection_reason')->nullable();
-            $table->text('notes')->nullable();
-            $table->foreignId('reviewed_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->unsignedTinyInteger('status')->default(RegistrationStatus::NEW->value)->index();
             $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
         });
