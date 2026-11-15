@@ -35,4 +35,14 @@ return [
         ],
     ],
 
+    'whatsapp' => [
+        'driver' => env('WHATSAPP_DRIVER', 'log'),
+        'gateway_url' => env('WHATSAPP_GATEWAY_URL', 'http://127.0.0.1:8080'),
+        'base_url' => env('WHATSAPP_BASE_URL', 'https://graph.facebook.com/v21.0'),
+        'token' => env('WHATSAPP_TOKEN'),
+        'phone_number_id' => env('WHATSAPP_PHONE_NUMBER_ID'),
+        'template_name' => env('WHATSAPP_OTP_TEMPLATE', 'password_reset_otp'),
+        'language_code' => env('WHATSAPP_OTP_LANGUAGE', 'ar'),
+    ],
+
 ];
