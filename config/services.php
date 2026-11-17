@@ -45,4 +45,10 @@ return [
         'language_code' => env('WHATSAPP_OTP_LANGUAGE', 'ar'),
     ],
 
+    'google' => [
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect' => env('GOOGLE_REDIRECT_URI'),
+    ],
+
 ];

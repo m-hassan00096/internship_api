@@ -22,10 +22,12 @@ class User extends Authenticatable
         'avatar',
         'phone',
         'email',
+        'google_id',
         'role',
         'manager_id',
         'password',
         'user_active',
+        'email_verified_at',
     ];
 
     protected $hidden = [

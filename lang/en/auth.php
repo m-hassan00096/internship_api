@@ -53,4 +53,11 @@ return [
         'password_confirmed' => 'The password confirmation does not match.',
         'whatsapp_otp_message' => 'Your password reset verification code for BaytFolio is: :otp (valid for :minutes minutes). Do not share this code.',
     ],
+    'google' => [
+        'invalid_token' => 'The Google verification token is invalid or expired.',
+        'email_required' => 'No email was provided by the Google account.',
+        'invalid_audience' => 'The token is not intended for this application.',
+        'invalid_role' => 'This account is not registered as a client.',
+        'failed' => 'Google authentication failed.',
+    ],
 ];
