@@ -6,6 +6,8 @@ use App\Http\Controllers\Api\V1\Vendor\BusinessTypeController;
 use App\Http\Controllers\Api\V1\Vendor\CategoryController;
 use App\Http\Controllers\Api\V1\Vendor\LoginController;
 use App\Http\Controllers\Api\V1\Vendor\LogoutController;
+use App\Http\Controllers\Api\V1\Vendor\PromotionController;
+use App\Http\Controllers\Api\V1\Vendor\PromotionTypeController;
 use App\Http\Controllers\Api\V1\Vendor\RoomController;
 use App\Http\Controllers\Api\V1\Vendor\SetPasswordController;
 use App\Http\Controllers\Api\V1\Vendor\ShowroomController;
@@ -81,5 +83,20 @@ Route::prefix('vendor')->group(function (): void {
                 Route::put('/{component}', [RoomController::class, 'updateComponent'])->name('update');
                 Route::delete('/{component}', [RoomController::class, 'destroyComponent'])->name('destroy');
             });
+        });
+
+    Route::middleware(['auth:web', 'scope:vendor'])
+        ->group(function (): void {
+            Route::get('/promotion-types', PromotionTypeController::class)
+                ->name('vendor.promotion-types.index');
+
+            Route::prefix('promotions')
+                ->name('vendor.promotions.')
+                ->group(function (): void {
+                    Route::get('/', [PromotionController::class, 'index'])->name('index');
+                    Route::post('/store', [PromotionController::class, 'store'])->name('store');
+                    Route::get('/{promotion}/show', [PromotionController::class, 'show'])->name('show');
+                    Route::delete('/{promotion}/delete', [PromotionController::class, 'destroy'])->name('destroy');
+                });
         });
 });

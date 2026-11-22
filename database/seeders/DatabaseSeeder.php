@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             BusinessTypeSeeder::class,
             CategorySeeder::class,
             ShowroomSeeder::class,
+            PromotionTypeSeeder::class,
         ]);
 
         User::firstOrCreate(
