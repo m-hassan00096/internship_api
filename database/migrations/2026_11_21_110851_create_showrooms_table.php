@@ -1,0 +1,38 @@
+<?php
+
+use App\Enums\ShowroomStatus;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('showrooms', function (Blueprint $table): void {
+            $table->id();
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('business_type_id')->constrained('business_types')->restrictOnDelete();
+            $table->string('name');
+            $table->string('slug')->unique();
+            $table->text('bio')->nullable();
+            $table->string('logo')->nullable();
+            $table->string('cover_image')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('whatsapp')->nullable();
+            $table->unsignedTinyInteger('status')->default(ShowroomStatus::ACTIVE->value)->index();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('showrooms');
+    }
+};
