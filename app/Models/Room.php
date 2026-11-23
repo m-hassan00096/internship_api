@@ -84,6 +84,11 @@ class Room extends Model
         return $this->morphMany(Promotion::class, 'promotable');
     }
 
+    public function reviews(): MorphMany
+    {
+        return $this->morphMany(Review::class, 'reviewable');
+    }
+
     #[Scope]
     protected function published(Builder $query): Builder
     {

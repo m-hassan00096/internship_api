@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\V1\Vendor\LoginController;
 use App\Http\Controllers\Api\V1\Vendor\LogoutController;
 use App\Http\Controllers\Api\V1\Vendor\PromotionController;
 use App\Http\Controllers\Api\V1\Vendor\PromotionTypeController;
+use App\Http\Controllers\Api\V1\Vendor\ReviewController;
 use App\Http\Controllers\Api\V1\Vendor\RoomController;
 use App\Http\Controllers\Api\V1\Vendor\SetPasswordController;
 use App\Http\Controllers\Api\V1\Vendor\ShowroomController;
@@ -97,6 +98,17 @@ Route::prefix('vendor')->group(function (): void {
                     Route::post('/store', [PromotionController::class, 'store'])->name('store');
                     Route::get('/{promotion}/show', [PromotionController::class, 'show'])->name('show');
                     Route::delete('/{promotion}/delete', [PromotionController::class, 'destroy'])->name('destroy');
+                });
+
+            Route::prefix('reviews')
+                ->name('vendor.reviews.')
+                ->group(function (): void {
+                    Route::get('/', [ReviewController::class, 'index'])->name('index');
+                    Route::get('/stats', [ReviewController::class, 'stats'])->name('stats');
+                    Route::get('/{review}', [ReviewController::class, 'show'])->whereNumber('review')->name('show');
+                    Route::post('/{review}/reply', [ReviewController::class, 'storeReply'])->whereNumber('review')->name('reply.store');
+                    Route::put('/{review}/reply', [ReviewController::class, 'updateReply'])->whereNumber('review')->name('reply.update');
+                    Route::delete('/{review}/reply', [ReviewController::class, 'deleteReply'])->whereNumber('review')->name('reply.delete');
                 });
         });
 });

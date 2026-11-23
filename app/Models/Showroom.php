@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Showroom extends Model
 {
@@ -110,5 +111,15 @@ class Showroom extends Model
     {
         return $this->hasOne(ShowroomBranch::class, 'showrooms_id')
             ->where('is_main', true);
+    }
+
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class, 'showrooms_id');
+    }
+
+    public function directReviews(): MorphMany
+    {
+        return $this->morphMany(Review::class, 'reviewable');
     }
 }
