@@ -122,4 +122,9 @@ class Showroom extends Model
     {
         return $this->morphMany(Review::class, 'reviewable');
     }
+
+    public function packages(): HasMany
+    {
+        return $this->hasMany(Package::class, 'showrooms_id');
+    }
 }

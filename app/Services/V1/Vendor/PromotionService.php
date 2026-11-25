@@ -2,15 +2,18 @@
 
 namespace App\Services\V1\Vendor;
 
+use App\Enums\PackageStatus;
 use App\Enums\PromotionStatus;
 use App\Enums\RoomStatus;
 use App\Exceptions\PromotionActionException;
+use App\Models\Package;
 use App\Models\Promotion;
 use App\Models\PromotionType;
 use App\Models\Room;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class PromotionService
 {
@@ -41,7 +44,14 @@ class PromotionService
         $showroom = $this->showroomService->getShowroom($user);
 
         $query = $showroom->promotions()
-            ->with(['promotionType', 'promotable.primaryImage']);
+            ->with([
+                'promotionType',
+                'promotable' => function (MorphTo $morphTo): void {
+                    $morphTo->morphWith([
+                        Room::class => ['primaryImage'],
+                    ]);
+                },
+            ]);
 
         if (isset($filters['status']) && $filters['status'] !== '') {
             $query->where('status', $filters['status']);
@@ -66,7 +76,14 @@ class PromotionService
         $showroom = $this->showroomService->getShowroom($user);
 
         $promotion = $showroom->promotions()
-            ->with(['promotionType', 'promotable.primaryImage'])
+            ->with([
+                'promotionType',
+                'promotable' => function (MorphTo $morphTo): void {
+                    $morphTo->morphWith([
+                        Room::class => ['primaryImage'],
+                    ]);
+                },
+            ])
             ->find($promotionId);
 
         if (! $promotion) {
@@ -106,6 +123,15 @@ class PromotionService
             if ($room->status !== RoomStatus::PUBLISHED) {
                 throw new PromotionActionException(__('vendor/promotion.errors.promotable_not_published'));
             }
+        } elseif ($promotableType === 'package' || $promotableType === Package::class) {
+            $package = $showroom->packages()->find($promotableId);
+            if (! $package) {
+                throw new PromotionActionException(__('vendor/promotion.errors.promotable_not_found'));
+            }
+
+            if ($package->status !== PackageStatus::PUBLISHED) {
+                throw new PromotionActionException(__('vendor/promotion.errors.promotable_not_published'));
+            }
         }
 
         // فحص عدم تكرار الطلب المعلق لنفس العنصر في نفس المكان
@@ -134,7 +160,14 @@ class PromotionService
             'created_by' => $user->id,
         ]);
 
-        return $promotion->load(['promotionType', 'promotable.primaryImage']);
+        return $promotion->load([
+            'promotionType',
+            'promotable' => function (MorphTo $morphTo): void {
+                $morphTo->morphWith([
+                    Room::class => ['primaryImage'],
+                ]);
+            },
+        ]);
     }
 
     /**

@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\V1\Vendor\BusinessTypeController;
 use App\Http\Controllers\Api\V1\Vendor\CategoryController;
 use App\Http\Controllers\Api\V1\Vendor\LoginController;
 use App\Http\Controllers\Api\V1\Vendor\LogoutController;
+use App\Http\Controllers\Api\V1\Vendor\PackageController;
 use App\Http\Controllers\Api\V1\Vendor\PromotionController;
 use App\Http\Controllers\Api\V1\Vendor\PromotionTypeController;
 use App\Http\Controllers\Api\V1\Vendor\ReviewController;
@@ -109,6 +110,17 @@ Route::prefix('vendor')->group(function (): void {
                     Route::post('/{review}/reply', [ReviewController::class, 'storeReply'])->whereNumber('review')->name('reply.store');
                     Route::put('/{review}/reply', [ReviewController::class, 'updateReply'])->whereNumber('review')->name('reply.update');
                     Route::delete('/{review}/reply', [ReviewController::class, 'deleteReply'])->whereNumber('review')->name('reply.delete');
+                });
+
+            Route::prefix('packages')
+                ->name('vendor.packages.')
+                ->group(function (): void {
+                    Route::get('/', [PackageController::class, 'index'])->name('index');
+                    Route::post('/', [PackageController::class, 'store'])->name('store');
+                    Route::get('/{package}', [PackageController::class, 'show'])->whereNumber('package')->name('show');
+                    Route::put('/{package}', [PackageController::class, 'update'])->whereNumber('package')->name('update');
+                    Route::delete('/{package}', [PackageController::class, 'destroy'])->whereNumber('package')->name('destroy');
+                    Route::patch('/{package}/status', [PackageController::class, 'changeStatus'])->whereNumber('package')->name('change-status');
                 });
         });
 });

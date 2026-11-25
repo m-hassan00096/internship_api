@@ -2,9 +2,11 @@
 
 namespace Tests\Feature;
 
+use App\Enums\PackageStatus;
 use App\Enums\PromotionStatus;
 use App\Enums\RoomStatus;
 use App\Enums\UserScope;
+use App\Models\Package;
 use App\Models\Promotion;
 use App\Models\PromotionType;
 use App\Models\Room;
@@ -257,5 +259,67 @@ class VendorPromotionTest extends TestCase
             ->assertJsonPath('message', __('vendor/promotion.errors.cannot_cancel'));
 
         $this->assertDatabaseHas('promotions', ['id' => $promotion->id]);
+    }
+
+    public function test_vendor_can_create_promotion_for_published_package(): void
+    {
+        [$user, $showroom] = $this->createVendorWithShowroom();
+        $promotionType = PromotionType::factory()->create([
+            'daily_price' => 150.00,
+            'is_active' => true,
+        ]);
+        $package = Package::factory()->published()->create([
+            'showrooms_id' => $showroom->id,
+            'name' => 'باكدج غرفة نوم ومعيشة',
+        ]);
+
+        $payload = [
+            'promotable_type' => 'package',
+            'promotable_id' => $package->id,
+            'promotion_type_id' => $promotionType->id,
+            'days' => 5,
+        ];
+
+        $response = $this->actingAs($user, 'web')
+            ->postJson(route('vendor.promotions.store'), $payload);
+
+        $response->assertCreated()
+            ->assertJsonPath('success', true)
+            ->assertJsonPath('data.promotableType', 'package')
+            ->assertJsonPath('data.promotableId', $package->id)
+            ->assertJsonPath('data.promotable.type', 'package')
+            ->assertJsonPath('data.promotable.name', 'باكدج غرفة نوم ومعيشة')
+            ->assertJsonPath('data.totalAmount', 750);
+
+        $this->assertDatabaseHas('promotions', [
+            'showrooms_id' => $showroom->id,
+            'promotable_type' => 'package',
+            'promotable_id' => $package->id,
+            'total_amount' => 750.00,
+        ]);
+    }
+
+    public function test_vendor_cannot_promote_draft_package(): void
+    {
+        [$user, $showroom] = $this->createVendorWithShowroom();
+        $promotionType = PromotionType::factory()->create(['is_active' => true]);
+        $package = Package::factory()->create([
+            'showrooms_id' => $showroom->id,
+            'status' => PackageStatus::DRAFT,
+        ]);
+
+        $payload = [
+            'promotable_type' => 'package',
+            'promotable_id' => $package->id,
+            'promotion_type_id' => $promotionType->id,
+            'days' => 3,
+        ];
+
+        $response = $this->actingAs($user, 'web')
+            ->postJson(route('vendor.promotions.store'), $payload);
+
+        $response->assertBadRequest()
+            ->assertJsonPath('success', false)
+            ->assertJsonPath('message', __('vendor/promotion.errors.promotable_not_published'));
     }
 }

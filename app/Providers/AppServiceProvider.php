@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Package;
 use App\Models\Room;
 use App\Models\Showroom;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -25,6 +26,7 @@ class AppServiceProvider extends ServiceProvider
         Relation::morphMap([
             'room' => Room::class,
             'showroom' => Showroom::class,
+            'package' => Package::class,
         ]);
     }
 }

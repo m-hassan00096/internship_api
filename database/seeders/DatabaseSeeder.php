@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             ShowroomSeeder::class,
             PromotionTypeSeeder::class,
             ReviewSeeder::class,
+            PackageSeeder::class,
         ]);
 
         User::firstOrCreate(

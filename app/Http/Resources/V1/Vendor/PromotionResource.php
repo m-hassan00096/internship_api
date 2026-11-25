@@ -3,6 +3,7 @@
 namespace App\Http\Resources\V1\Vendor;
 
 use App\Enums\PromotionStatus;
+use App\Models\Package;
 use App\Models\Promotion;
 use App\Models\Room;
 use Illuminate\Http\Request;
@@ -32,6 +33,7 @@ class PromotionResource extends JsonResource
                     $primaryImage = $this->promotable->primaryImage;
 
                     return [
+                        'type' => 'room',
                         'id' => $this->promotable->id,
                         'name' => $this->promotable->name,
                         'sku' => $this->promotable->sku,
@@ -43,6 +45,21 @@ class PromotionResource extends JsonResource
                                 ? $primaryImage->image_path
                                 : Storage::url($primaryImage->image_path),
                         ] : null,
+                    ];
+                }
+
+                if ($this->promotable instanceof Package) {
+                    return [
+                        'type' => 'package',
+                        'id' => $this->promotable->id,
+                        'name' => $this->promotable->name,
+                        'sku' => $this->promotable->sku,
+                        'price' => ! is_null($this->promotable->price) ? (float) $this->promotable->price : null,
+                        'image' => $this->promotable->image_path ? (
+                            str_starts_with($this->promotable->image_path, 'http')
+                                ? $this->promotable->image_path
+                                : Storage::url($this->promotable->image_path)
+                        ) : null,
                     ];
                 }
 
