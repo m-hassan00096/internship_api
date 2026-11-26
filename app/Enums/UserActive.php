@@ -7,6 +7,7 @@ enum UserActive: int
     case INACTIVE = 0;
     case ACTIVE = 1;
     case PENDING_PASSWORD = 2;
+    case BLOCKED = 3;
 
     public function label(): string
     {

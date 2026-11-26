@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\V1\Admin\ShowroomController;
 use App\Http\Controllers\Api\V1\Admin\ShowroomPackageController;
 use App\Http\Controllers\Api\V1\Admin\ShowroomRoomController;
 use App\Http\Controllers\Api\V1\Admin\ShowroomVerificationController;
+use App\Http\Controllers\Api\V1\Admin\UserController;
 use App\Http\Controllers\Api\V1\Admin\VendorRegistrationController;
 use App\Http\Controllers\Api\V1\ResetPassword\PasswordResetController;
 use Illuminate\Support\Facades\Route;
@@ -82,9 +83,9 @@ Route::prefix('admin')->group(function (): void {
                 Route::get('/{id}', [ShowroomContractController::class, 'show'])
                     ->name('contracts');
                 Route::get('/{id}/history', [ShowroomContractController::class, 'history'])
-                    ->name('history');
+                    ->name('contracts.history');
                 Route::post('/{id}/renew', [ShowroomContractController::class, 'renew'])
-                    ->name('renew');
+                    ->name('contracts.renew');
             });
 
             // Verification Module
@@ -94,6 +95,14 @@ Route::prefix('admin')->group(function (): void {
                 Route::post('/{id}', [ShowroomVerificationController::class, 'manage'])
                     ->name('verification');
             });
+        });
 
+    Route::prefix('users')
+        ->middleware(['auth:web', 'scope:admin'])
+        ->name('admin.users.')
+        ->group(function (): void {
+            Route::get('/', [UserController::class, 'index'])->name('index');
+            Route::get('/{id}', [UserController::class, 'show'])->whereNumber('id')->name('show');
+            Route::patch('/{id}/status', [UserController::class, 'updateStatus'])->whereNumber('id')->name('update-status');
         });
 });
