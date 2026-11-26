@@ -43,10 +43,10 @@ class StorePackageRequest extends FormRequest
             'price' => ['nullable', 'numeric', 'min:0'],
             'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:5120'],
             'status' => ['nullable', Rule::enum(PackageStatus::class)],
-            'current_step' => ['nullable', 'integer', 'min:1', 'max:10'],
+            'currentStep' => ['nullable', 'integer', 'min:1', 'max:10'],
             'rooms' => ['required', 'array', 'min:1'],
             'rooms.*.id' => ['required', 'integer', 'exists:rooms,id'],
-            'rooms.*.sort_order' => ['nullable', 'integer', 'min:0'],
+            'rooms.*.sortOrder' => ['nullable', 'integer', 'min:0'],
         ];
     }
 
