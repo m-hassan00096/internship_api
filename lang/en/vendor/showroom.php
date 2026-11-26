@@ -20,6 +20,7 @@ return [
         'APPROVED' => 'Verified',
         'REJECTED' => 'Rejected',
         'EXPIRED' => 'Expired',
+        'UNVERIFIED' => 'Unverified',
     ],
 
     'messages' => [

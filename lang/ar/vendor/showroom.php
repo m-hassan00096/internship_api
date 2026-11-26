@@ -20,6 +20,7 @@ return [
         'APPROVED' => 'معتمد وموثق',
         'REJECTED' => 'مرفوض',
         'EXPIRED' => 'منتهي',
+        'UNVERIFIED' => 'غير موثق',
     ],
 
     'messages' => [

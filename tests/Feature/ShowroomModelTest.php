@@ -101,10 +101,12 @@ class ShowroomModelTest extends TestCase
         $this->assertSame('نشط', ShowroomStatus::ACTIVE->label());
         $this->assertSame('ساري', ContractStatus::ACTIVE->label());
         $this->assertSame('معتمد وموثق', VerificationStatus::APPROVED->label());
+        $this->assertSame('غير موثق', VerificationStatus::UNVERIFIED->label());
 
         app()->setLocale('en');
         $this->assertSame('Active', ShowroomStatus::ACTIVE->label());
         $this->assertSame('Active', ContractStatus::ACTIVE->label());
         $this->assertSame('Verified', VerificationStatus::APPROVED->label());
+        $this->assertSame('Unverified', VerificationStatus::UNVERIFIED->label());
     }
 }
