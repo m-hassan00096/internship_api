@@ -26,6 +26,8 @@ class StoreRoomRequest extends FormRequest
     {
         return [
             'category_id' => ['required', 'integer', 'exists:categories,id'],
+            'tag_ids' => ['nullable', 'array'],
+            'tag_ids.*' => ['integer', 'exists:tags,id'],
             'name' => ['required', 'string', 'max:255'],
             'sku' => ['nullable', 'string', 'max:100'],
             'warranty' => ['nullable', 'string', 'max:255'],

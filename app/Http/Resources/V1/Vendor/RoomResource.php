@@ -62,6 +62,7 @@ class RoomResource extends JsonResource
             'isPublished' => $this->isPublished(),
             'publishedAt' => $this->published_at?->toIso8601String(),
             'category' => new CategoryResource($this->whenLoaded('category')),
+            'tags' => TagResource::collection($this->whenLoaded('tags')),
             'primaryImage' => new RoomImageResource($this->whenLoaded('primaryImage')),
             'images' => RoomImageResource::collection($this->whenLoaded('images')),
             'components' => RoomComponentResource::collection($this->whenLoaded('components')),

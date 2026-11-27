@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\V1\Vendor\ReviewController;
 use App\Http\Controllers\Api\V1\Vendor\RoomController;
 use App\Http\Controllers\Api\V1\Vendor\SetPasswordController;
 use App\Http\Controllers\Api\V1\Vendor\ShowroomController;
+use App\Http\Controllers\Api\V1\Vendor\TagController;
 use App\Http\Controllers\Api\V1\Vendor\VendorRegistrationController;
 use Illuminate\Support\Facades\Route;
 
@@ -22,6 +23,9 @@ Route::prefix('vendor')->group(function (): void {
 
     Route::get('/categories', [CategoryController::class, 'index'])
         ->name('vendor.categories.index');
+
+    Route::get('/tags', [TagController::class, 'index'])
+        ->name('vendor.tags.index');
 
     Route::prefix('auth')->group(function (): void {
         Route::post('/registrations', VendorRegistrationController::class)

@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             RoleAndPermissionSeeder::class,
             BusinessTypeSeeder::class,
             CategorySeeder::class,
+            TagSeeder::class,
             ShowroomSeeder::class,
             PromotionTypeSeeder::class,
             ReviewSeeder::class,

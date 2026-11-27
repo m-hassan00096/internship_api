@@ -10,6 +10,7 @@ use App\Models\Category;
 use App\Models\Room;
 use App\Models\RoomComponent;
 use App\Models\RoomImage;
+use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
@@ -31,6 +32,19 @@ class RoomService
     public function listCategories(): Collection
     {
         return Category::query()
+            ->active()
+            ->orderBy('sort_order')
+            ->get();
+    }
+
+    /**
+     * جلب قائمة التاجات النشطة المتاحة لربطها بالغرف
+     *
+     * @return Collection<int, Tag>
+     */
+    public function listTags(): Collection
+    {
+        return Tag::query()
             ->active()
             ->orderBy('sort_order')
             ->get();
@@ -80,6 +94,7 @@ class RoomService
         $room = $showroom->rooms()
             ->with([
                 'category',
+                'tags',
                 'images',
                 'primaryImage',
                 'components.attributes',
@@ -111,12 +126,19 @@ class RoomService
             }
         }
 
+        $tagIds = $data['tag_ids'] ?? null;
+        unset($data['tag_ids']);
+
         $data['status'] = RoomStatus::DRAFT;
         $data['current_step'] = $data['current_step'] ?? 1;
 
         $room = $showroom->rooms()->create($data);
 
-        return $room->load(['category', 'primaryImage']);
+        if (! empty($tagIds)) {
+            $room->tags()->sync($tagIds);
+        }
+
+        return $room->load(['category', 'primaryImage', 'tags']);
     }
 
     /**
@@ -128,9 +150,16 @@ class RoomService
     {
         $room = $this->getRoom($user, $roomId);
 
+        $tagIds = $data['tag_ids'] ?? null;
+        unset($data['tag_ids']);
+
         $room->update($data);
 
-        return $room->fresh(['category', 'primaryImage', 'images', 'components.attributes']);
+        if ($tagIds !== null) {
+            $room->tags()->sync($tagIds);
+        }
+
+        return $room->fresh(['category', 'primaryImage', 'images', 'components.attributes', 'tags']);
     }
 
     /**

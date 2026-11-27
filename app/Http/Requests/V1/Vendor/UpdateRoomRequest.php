@@ -27,6 +27,8 @@ class UpdateRoomRequest extends FormRequest
     {
         return [
             'category_id' => ['sometimes', 'required', 'integer', 'exists:categories,id'],
+            'tag_ids' => ['nullable', 'array'],
+            'tag_ids.*' => ['integer', 'exists:tags,id'],
             'name' => ['sometimes', 'required', 'string', 'max:255'],
             'sku' => ['nullable', 'string', 'max:100'],
             'warranty' => ['nullable', 'string', 'max:255'],

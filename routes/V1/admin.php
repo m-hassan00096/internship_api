@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\UserScope;
+use App\Http\Controllers\Api\V1\Admin\CategoryController;
 use App\Http\Controllers\Api\V1\Admin\LoginController;
 use App\Http\Controllers\Api\V1\Admin\LogoutController;
 use App\Http\Controllers\Api\V1\Admin\ShowroomContractController;
@@ -8,6 +9,7 @@ use App\Http\Controllers\Api\V1\Admin\ShowroomController;
 use App\Http\Controllers\Api\V1\Admin\ShowroomPackageController;
 use App\Http\Controllers\Api\V1\Admin\ShowroomRoomController;
 use App\Http\Controllers\Api\V1\Admin\ShowroomVerificationController;
+use App\Http\Controllers\Api\V1\Admin\TagController;
 use App\Http\Controllers\Api\V1\Admin\UserController;
 use App\Http\Controllers\Api\V1\Admin\VendorRegistrationController;
 use App\Http\Controllers\Api\V1\ResetPassword\PasswordResetController;
@@ -104,5 +106,27 @@ Route::prefix('admin')->group(function (): void {
             Route::get('/', [UserController::class, 'index'])->name('index');
             Route::get('/{id}', [UserController::class, 'show'])->whereNumber('id')->name('show');
             Route::patch('/{id}/status', [UserController::class, 'updateStatus'])->whereNumber('id')->name('update-status');
+        });
+
+    Route::prefix('categories')
+        ->middleware(['auth:web', 'scope:admin'])
+        ->name('admin.categories.')
+        ->group(function (): void {
+            Route::get('/', [CategoryController::class, 'index'])->name('index');
+            Route::post('store', [CategoryController::class, 'store'])->name('store');
+            Route::get('/{id}', [CategoryController::class, 'show'])->whereNumber('id')->name('show');
+            Route::put('update/{id}', [CategoryController::class, 'update'])->whereNumber('id')->name('update');
+            Route::patch('/status/{id}', [CategoryController::class, 'toggleStatus'])->whereNumber('id')->name('toggle-status');
+        });
+
+    Route::prefix('tags')
+        ->middleware(['auth:web', 'scope:admin'])
+        ->name('admin.tags.')
+        ->group(function (): void {
+            Route::get('/', [TagController::class, 'index'])->name('index');
+            Route::post('store', [TagController::class, 'store'])->name('store');
+            Route::get('/{id}', [TagController::class, 'show'])->whereNumber('id')->name('show');
+            Route::put('update/{id}', [TagController::class, 'update'])->whereNumber('id')->name('update');
+            Route::patch('/status/{id}', [TagController::class, 'toggleStatus'])->whereNumber('id')->name('toggle-status');
         });
 });

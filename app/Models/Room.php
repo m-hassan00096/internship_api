@@ -65,6 +65,11 @@ class Room extends Model
         return $this->belongsTo(Category::class, 'category_id');
     }
 
+    public function tags(): BelongsToMany
+    {
+        return $this->belongsToMany(Tag::class, 'room_tags', 'room_id', 'tag_id');
+    }
+
     public function images(): HasMany
     {
         return $this->hasMany(RoomImage::class, 'rooms_id')->orderBy('sort_order');

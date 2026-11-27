@@ -11,6 +11,7 @@ use App\Models\Room;
 use App\Models\RoomImage;
 use App\Models\Showroom;
 use App\Models\ShowroomContract;
+use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -53,6 +54,19 @@ class VendorRoomTest extends TestCase
         $response->assertOk()
             ->assertJsonPath('success', true)
             ->assertJsonCount(1, 'data');
+    }
+
+    public function test_can_list_active_tags(): void
+    {
+        Tag::factory()->create(['name' => ['ar' => 'مودرن', 'en' => 'Modern'], 'slug' => 'modern', 'is_active' => true]);
+        Tag::factory()->create(['is_active' => false]);
+
+        $response = $this->getJson(route('vendor.tags.index'));
+
+        $response->assertOk()
+            ->assertJsonPath('success', true)
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.slug', 'modern');
     }
 
     public function test_vendor_can_list_their_rooms(): void
