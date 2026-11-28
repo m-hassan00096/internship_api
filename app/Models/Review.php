@@ -87,6 +87,12 @@ class Review extends Model
         return $query->where('status', ReviewStatus::REJECTED);
     }
 
+    #[Scope]
+    protected function hidden(Builder $query): Builder
+    {
+        return $query->where('status', ReviewStatus::HIDDEN);
+    }
+
     public function isApproved(): bool
     {
         return $this->status === ReviewStatus::APPROVED;
@@ -100,5 +106,10 @@ class Review extends Model
     public function isRejected(): bool
     {
         return $this->status === ReviewStatus::REJECTED;
+    }
+
+    public function isHidden(): bool
+    {
+        return $this->status === ReviewStatus::HIDDEN;
     }
 }

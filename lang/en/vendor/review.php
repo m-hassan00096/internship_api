@@ -5,6 +5,7 @@ return [
         'PENDING' => 'Pending Moderation',
         'APPROVED' => 'Approved & Published',
         'REJECTED' => 'Rejected & Hidden',
+        'HIDDEN' => 'Hidden',
     ],
     'messages' => [
         'created' => 'Review submitted successfully and is pending moderation.',

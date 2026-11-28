@@ -4,6 +4,7 @@ use App\Enums\UserScope;
 use App\Http\Controllers\Api\V1\Admin\CategoryController;
 use App\Http\Controllers\Api\V1\Admin\LoginController;
 use App\Http\Controllers\Api\V1\Admin\LogoutController;
+use App\Http\Controllers\Api\V1\Admin\ReviewController;
 use App\Http\Controllers\Api\V1\Admin\ShowroomContractController;
 use App\Http\Controllers\Api\V1\Admin\ShowroomController;
 use App\Http\Controllers\Api\V1\Admin\ShowroomPackageController;
@@ -128,5 +129,14 @@ Route::prefix('admin')->group(function (): void {
             Route::get('/{id}', [TagController::class, 'show'])->whereNumber('id')->name('show');
             Route::put('update/{id}', [TagController::class, 'update'])->whereNumber('id')->name('update');
             Route::patch('/status/{id}', [TagController::class, 'toggleStatus'])->whereNumber('id')->name('toggle-status');
+        });
+
+    Route::prefix('reviews')
+        ->middleware(['auth:web', 'scope:admin'])
+        ->name('admin.reviews.')
+        ->group(function (): void {
+            Route::get('/', [ReviewController::class, 'index'])->name('index');
+            Route::get('/{id}', [ReviewController::class, 'show'])->whereNumber('id')->name('show');
+            Route::patch('/{id}/status', [ReviewController::class, 'updateStatus'])->whereNumber('id')->name('update-status');
         });
 });
