@@ -4,6 +4,7 @@ use App\Enums\UserScope;
 use App\Http\Controllers\Api\V1\Admin\CategoryController;
 use App\Http\Controllers\Api\V1\Admin\LoginController;
 use App\Http\Controllers\Api\V1\Admin\LogoutController;
+use App\Http\Controllers\Api\V1\Admin\PromotionController;
 use App\Http\Controllers\Api\V1\Admin\ReviewController;
 use App\Http\Controllers\Api\V1\Admin\ShowroomContractController;
 use App\Http\Controllers\Api\V1\Admin\ShowroomController;
@@ -138,5 +139,17 @@ Route::prefix('admin')->group(function (): void {
             Route::get('/', [ReviewController::class, 'index'])->name('index');
             Route::get('/{id}', [ReviewController::class, 'show'])->whereNumber('id')->name('show');
             Route::patch('/{id}/status', [ReviewController::class, 'updateStatus'])->whereNumber('id')->name('update-status');
+        });
+
+    Route::prefix('promotions')
+        ->middleware(['auth:web', 'scope:admin'])
+        ->name('admin.promotions.')
+        ->group(function (): void {
+            Route::get('/active', [PromotionController::class, 'activeList'])->name('active');
+            Route::get('/requests', [PromotionController::class, 'requestsList'])->name('requests');
+            Route::get('/pricing', [PromotionController::class, 'pricingSettings'])->name('pricing');
+            Route::put('/pricing/update', [PromotionController::class, 'updatePricing'])->name('pricing.update');
+            Route::get('/{id}', [PromotionController::class, 'show'])->whereNumber('id')->name('show');
+            Route::patch('/{id}/status', [PromotionController::class, 'updateStatus'])->whereNumber('id')->name('update-status');
         });
 });
